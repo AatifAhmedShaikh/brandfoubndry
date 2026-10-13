@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Tokens ─────────────────────────
+   The Creative Foundry: obsidian and warm paper, one electric accent used sparingly.
+   Chartreuse marks action, progress and approval — never decoration. */
+@theme {
+  --color-ink: #111110;
+  --color-ink-2: #1a1a18;
+  --color-ink-3: #232321;
+  --color-graphite: #292a27;
+  --color-stone: #96958c;
+  --color-stone-dark: #6b6a62;
+  --color-paper: #f5f2ea;
+  --color-paper-2: #ebe7dc;
+  --color-paper-3: #ddd8ca;
+  --color-sheet: #fffdf8;
+  --color-volt: #d7ff64;
+  --color-volt-dim: #b9e04a;
+  --color-signal: #ff5b2e;
+  --color-amber: #e9b949;
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, monospace;
+
+  --text-mega: clamp(3.25rem, 9.2vw, 9.5rem);
+  --text-giant: clamp(3rem, 6vw, 5.75rem);
+  --text-huge: clamp(2rem, 4vw, 3.5rem);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper font-sans text-ink;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: var(--color-volt);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-volt);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-ink);
+  }
+  .on-light :focus-visible {
+    box-shadow: 0 0 0 4px var(--color-ink);
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+    letter-spacing: -0.025em;
+  }
+  button, [role="button"], summary { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+}
+
+/* ───────────────────────── Components ───────────────────────── */
+@layer components {
+  .eyebrow {
+    @apply font-mono text-[11px] font-medium tracking-[0.14em] uppercase;
+  }
+  .serif-em {
+    @apply font-serif font-normal italic;
+    letter-spacing: -0.01em;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-[3px] px-4 py-2.5 text-sm font-medium whitespace-nowrap transition duration-200 select-none disabled:opacity-45;
+    transition-timing-function: var(--ease-out);
+  }
+  .btn-lg { @apply px-6 py-3.5 text-[15px]; }
+  .btn-sm { @apply px-3 py-1.5 text-[13px]; }
+  .btn-volt { @apply bg-volt text-ink hover:bg-white active:translate-y-px; }
+  .btn-ink { @apply bg-ink text-paper hover:bg-graphite active:translate-y-px; }
+  .btn-paper { @apply bg-paper text-ink hover:bg-white active:translate-y-px; }
+  .btn-line { @apply border border-current/25 hover:border-current/70 active:translate-y-px; }
+  .btn-quiet { @apply px-2 hover:bg-current/8; }
+  .btn-danger { @apply border border-signal/50 text-signal hover:bg-signal hover:text-ink; }
+
+  .field-label { @apply mb-1.5 block text-[13px] font-medium text-ink; }
+  .field-hint { @apply mt-1.5 text-[12px] leading-snug text-stone-dark; }
+  .input {
+    @apply w-full rounded-[3px] border border-ink/15 bg-sheet px-3 py-2.5 text-[15px] text-ink placeholder:text-stone transition;
+  }
+  .input:hover { @apply border-ink/30; }
+  .input:focus { @apply border-ink outline-none; box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-volt) 70%, transparent); }
+  .input[aria-invalid="true"] { @apply border-signal; }
+  .input-dark { @apply border-paper/15 bg-ink-2 text-paper placeholder:text-stone; }
+  .input-dark:hover { @apply border-paper/30; }
+  .input-dark:focus { @apply border-volt; }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-current/20 px-2.5 py-1 font-mono text-[11px] tracking-wide uppercase;
+  }
+  .rule { @apply border-ink/12; }
+  .rule-dark { @apply border-paper/12; }
+
+  /* Print-style crop marks: the foundry's signature framing for previews. */
+  .cropmarks { position: relative; }
+  .cropmarks::before, .cropmarks::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    border-color: currentColor;
+    opacity: 0.45;
+  }
+  .cropmarks::before { top: -8px; left: -8px; border-top: 1px solid; border-left: 1px solid; }
+  .cropmarks::after { bottom: -8px; right: -8px; border-bottom: 1px solid; border-right: 1px solid; }
+
+  .ruler {
+    background-image: repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 8px);
+    height: 6px;
+    opacity: 0.25;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  input[type="range"].slider {
+    @apply h-8 w-full cursor-pointer appearance-none bg-transparent;
+  }
+  input[type="range"].slider::-webkit-slider-runnable-track { height: 2px; background: currentColor; opacity: 1; }
+  input[type="range"].slider::-moz-range-track { height: 2px; background: currentColor; }
+  input[type="range"].slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; margin-top: -8px; border-radius: 0;
+    background: var(--color-volt); border: 2px solid var(--color-ink);
+    transform: rotate(45deg);
+  }
+  input[type="range"].slider::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 0; background: var(--color-volt); border: 2px solid var(--color-ink); transform: rotate(45deg);
+  }
+
+  dialog.modal::backdrop { background: rgb(17 17 16 / 0.55); backdrop-filter: blur(2px); }
+  dialog.modal[open] { animation: rise 0.35s var(--ease-out) both; }
+}
+
+/* ───────────────────────── Motion ───────────────────────── */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+@utility rise { animation: rise 0.7s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 70ms); }
+@utility fade-in { animation: fade 0.5s var(--ease-out) both; }
+@utility wipe-in { animation: wipe 0.9s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms); }
+
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); transition-delay: calc(var(--i, 0) * 80ms); }
+.reveal.is-in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; }
+}
